@@ -1,0 +1,15 @@
+folder: {}
+resources:
+  controller_list: {}
+  disk_list:
+    '0':
+      disk_size_mb: true
+  guest_customization:
+    windows_data:
+      timezone: true
+  memory_size_mib: true
+  num_sockets: true
+  num_vcpus_per_socket: true
+  template_nic_list:
+    '0':
+      net_name: true

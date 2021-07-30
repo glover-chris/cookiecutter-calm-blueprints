@@ -1,0 +1,7 @@
+{% macro blueprint_description_linux() %}
+    """Centos 7 Blueprint that assumes static IPv4 configuration provided by the user, ejects CDROM, runs yum update, disables SELinux and initializes data disk. Sends out an email notification on successful creation of VM."""
+{% endmacro %}
+
+{% macro blueprint_description_windows() %}
+    """Windows 2019 Blueprint that requests IPv4 from the user, joins domain, has performance optimization and ejects CDROM. Runs Windows Update and initializes data disk. Sends out an email notification on successful creation of VM."""
+{% endmacro %}

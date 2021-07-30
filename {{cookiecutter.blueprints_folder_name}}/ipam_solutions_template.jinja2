@@ -1,0 +1,554 @@
+{# IPAM Soliutions Blueprint Common code sections #}
+
+{% macro ipam_actions_ahvvm_substrate() %}ipam_actions{% endmacro %}
+
+{% macro ipam_actions_vsphere_substrate() %}ipam_actions{% endmacro %}
+
+{# DHCP IP blueprint code sections #}
+
+{% macro dhcp_vmware_substrate_provider_spec() %}
+    provider_spec = read_vmw_spec(os.path.join("specs", "vSphereVM_provider_spec_f1_dhcp.yaml"))
+{% endmacro %}
+
+    {# Linux blueprint DHCP IP code sections #}
+
+{% macro dhcp_ahv_guest_customizations_linux() %}
+        filename=os.path.join("specs", "vm_name_cloud_init_data_f1_dhcp.yaml")
+{% endmacro %}
+
+    {# Windows blueprint DHCP IP code sections #}
+
+{% macro dhcp_ahv_guest_customizations_windows() %}
+        filename=os.path.join("specs", "vm_name_sysprep_unattend_xml_f1_dhcp.xml")
+{% endmacro %}
+
+{# Static IP blueprint code sections #}
+
+{% macro static_ip_vmware_substrate_provider_spec() %}
+    provider_spec = read_vmw_spec(os.path.join("specs", "vSphereVM_provider_spec_f2_static.yaml"))
+{% endmacro %}
+
+    {# Linux blueprint Static IP code sections #}
+
+{% macro static_ip_profile_variables_linux() %}
+    vm_ip = CalmVariable.Simple(
+        "{{cookiecutter.vm_ip}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address for this virtual machine",
+    )
+
+    gateway = CalmVariable.Simple(
+        "{{cookiecutter.gateway}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address of the gateway",
+    )
+
+    subnet_mask = CalmVariable.Simple(
+        "{{cookiecutter.subnet_mask}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 subnet mask for this virtual machine",
+    )
+
+    dns1 = CalmVariable.Simple(
+        "{{cookiecutter.dns1}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address of the primary DNS server",
+    )
+
+    dns2 = CalmVariable.Simple(
+        "{{cookiecutter.dns2}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address of the secondary DNS server",
+    )
+{% endmacro %}
+
+{% macro static_ip_ahv_guest_customizations_linux() %}
+        filename=os.path.join("specs", "vm_name_cloud_init_data_f2_static.yaml")
+{% endmacro %}
+
+    {# Windows blueprint Static IP code sections #}
+
+{% macro static_ip_profile_variables_windows() %}
+    vm_ip = CalmVariable.Simple(
+        "{{cookiecutter.vm_ip}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address for this virtual machine",
+    )
+
+    gateway = CalmVariable.Simple(
+        "{{cookiecutter.gateway}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address of the gateway",
+    )
+
+    dns1 = CalmVariable.Simple(
+        "{{cookiecutter.dns1}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address of the primary DNS server",
+    )
+
+    dns2 = CalmVariable.Simple(
+        "{{cookiecutter.dns2}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 address of the secondary DNS server",
+    )
+{% endmacro %}
+
+{% macro static_ip_ahv_guest_customizations_windows() %}
+        filename=os.path.join("specs", "vm_name_sysprep_unattend_xml_f2_static.xml")
+{% endmacro %}
+
+{% macro static_ip_ahv_profile_variables_windows() %}
+    subnet_mask_bits = CalmVariable.Simple(
+        "24",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 subnet mask for this virtual machine (in bits format; for exp: 24)",
+    )
+{% endmacro %}
+
+{% macro static_ip_vmware_profile_variables_windows() %}
+    subnet_mask = CalmVariable.Simple(
+        "255.255.252.0",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Please enter the IPv4 subnet mask for this virtual machine",
+    )
+{% endmacro %}
+
+{# PHPIPAM blueprint code sections #}
+
+{% macro phpipam_credential_secret() %}
+if file_exists(os.path.join(init_data["LOCAL_DIR"]["location"], "BP_CRED_phpipam_PASSWORD")):
+    BP_CRED_phpipam_PASSWORD = read_local_file("BP_CRED_phpipam_PASSWORD")
+else:
+    BP_CRED_phpipam_PASSWORD = "nutanix"
+{% endmacro %}
+
+{% macro phpipam_credential_username() %}
+BP_CRED_phpipam = basic_cred(
+    "{{cookiecutter.phpipam_username}}",
+    BP_CRED_phpipam_PASSWORD,
+    name="phpipam",
+    type="PASSWORD",
+)
+{% endmacro %}
+
+{% macro phpipam_profile_variables() %}
+    phpipam_ip = CalmVariable.Simple(
+        "{{cookiecutter.phpipam_ip}}",
+        label="",
+        is_mandatory=False,
+        is_hidden=True,
+        runtime=False,
+        description="IP address or FQDN for your phpIPAM server.",
+    )
+
+    phpipam_app_id = CalmVariable.Simple(
+        "{{cookiecutter.phpipam_app_id}}",
+        label="",
+        is_mandatory=False,
+        is_hidden=True,
+        runtime=False,
+        description="Name of the API application created in phpIPAM.",
+    )
+
+    phpipam_section_id = CalmVariable.Simple(
+        "{{cookiecutter.phpipam_section_id}}",
+        label="",
+        is_mandatory=False,
+        is_hidden=True,
+        runtime=False,
+        description='This is the section id in phpipam where the vlan/subnet exists (1 matches "Customers" by default; you can check the section id by navigating to your subnet in phpIPAM and looking at the url)',
+    )
+
+    vlan_id = CalmVariable.Simple(
+        "{{cookiecutter.vlan_id}}",
+        label="",
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=True,
+        description="Id of the VLAN from which to get an IP in phpIPAM.",
+    )
+{% endmacro %}
+
+{% macro phpipam_substrate_actions() %}
+class ipam_actions(Substrate):
+    @action
+    def __pre_create__():
+
+        CalmTask.SetVariable.escript(#PhpIPAMGetSubnetId
+            name="PhpIPAMGetSubnetId",
+            filename=shared_scripts_path + "phpipam/PhpIPAMGetSubnetId.py",
+            variables=["phpipam_subnet_id"],
+        )
+        CalmTask.SetVariable.escript(#PhpIPAMGetSubnet
+            name="PhpIPAMGetSubnet",
+            filename=shared_scripts_path + "phpipam/PhpIPAMGetSubnet.py",
+            variables=[
+                "subnet_mask_bits",
+                "subnet_mask",
+                "gateway",
+                "dns1",
+                "dns2",
+            ],
+        )
+        CalmTask.SetVariable.escript(#PhpIPAMGetFreeIp
+            name="PhpIPAMGetFreeIp",
+            filename=shared_scripts_path + "phpipam/PhpIPAMGetFreeIp.py",
+            variables=["vm_ip"],
+        )
+
+    @action
+    def __post_delete__():
+
+        CalmTask.Exec.escript(
+            name="PhpIPAMReleaseIp",
+            filename=shared_scripts_path + "phpipam/PhpIPAMReleaseIp.py",
+        )
+{% endmacro %}
+
+{% macro phpipam_vmware_substrate_provider_spec() %}
+    provider_spec = read_vmw_spec(os.path.join("specs", "vSphereVM_provider_spec_f3_phpipam.yaml"))
+{% endmacro %}
+
+{% macro phpipam_blueprint_cred_inclusion() %}
+        BP_CRED_phpipam,
+{% endmacro %}
+
+    {# Linux blueprint PHPIPAM code sections #}
+
+{% macro phpipam_ahv_guest_customizations_linux() %}
+        filename=os.path.join("specs", "vm_name_cloud_init_data_f3_phpipam.yaml")
+{% endmacro %}
+
+    {# Windows blueprint PHPIPAM code sections #}
+
+{% macro phpipam_ahv_guest_customizations_windows() %}
+        filename=os.path.join("specs", "vm_name_sysprep_unattend_xml_f3_phpipam.xml")
+{% endmacro %}
+
+{# INFOBLOX IPAM blueprint code sections #}
+
+{% macro infoblox_credential_secret() %}
+if file_exists(os.path.join(init_data["LOCAL_DIR"]["location"], "BP_CRED_infoblox_PASSWORD")):
+    BP_CRED_infoblox_PASSWORD = read_local_file("BP_CRED_infoblox_PASSWORD")
+else:
+    BP_CRED_infoblox_PASSWORD = "nutanix"
+{% endmacro %}
+
+{% macro infoblox_credential_username() %}
+BP_CRED_infoblox = basic_cred(
+    "{{cookiecutter.infoblox_username}}",
+    BP_CRED_infoblox_PASSWORD,
+    name="infoblox",
+    type="PASSWORD",
+)
+{% endmacro %}
+
+{% macro infoblox_profile_variables() %}
+    infoblox_ip = CalmVariable.Simple(
+        "{{cookiecutter.infoblox_ip}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=False,
+        is_mandatory=False,
+        is_hidden=True,
+        runtime=False,
+        description="",
+    )
+
+    network = CalmVariable.WithOptions.FromTask(
+        CalmTask.HTTP.get(
+            "https://@@{infoblox_ip}@@/wapi/v2.7/network?_return_as_object=1",
+            headers={},
+            secret_headers={},
+            content_type="application/json",
+            verify=False,
+            status_mapping={201: True, 404: False},
+            response_paths={"network": "$.result.network"},
+            name="",
+            cred=ref(BP_CRED_infoblox),
+        ),
+        label="",
+        regex="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        description="Infoblox network from which to get an IPv4 address. Scope options on this network will also define your subnet mask, DNS server and default gateway.",
+    )
+{% endmacro %}
+
+{% macro infoblox_substrate_actions() %}
+class ipam_actions(Substrate):
+    @action
+    def __pre_create__():
+
+        CalmTask.SetVariable.escript(#InfobloxReserveIp
+            name="InfobloxReserveIp",
+            filename=shared_scripts_path + "infoblox/InfobloxReserveIp.py",
+            variables=["ip_ref","vm_ip"],
+        )
+        CalmTask.SetVariable.escript(#InfobloxSetMask
+            name="InfobloxSetMask",
+            filename=shared_scripts_path + "infoblox/InfobloxSetMask.py",
+            variables=["subnet_mask", "subnet_mask_bits"],
+        )
+        CalmTask.SetVariable.escript(#InfobloxGetOptions
+            name="InfobloxGetOptions",
+            filename=shared_scripts_path + "infoblox/InfobloxGetOptions.py",
+            variables=["dns1", "dns2", "gateway"],
+        )
+
+    @action
+    def __post_delete__():
+
+        CalmTask.Exec.escript(#InfobloxReleaseIp
+            name="InfobloxReleaseIp",
+            filename=shared_scripts_path + "infoblox/InfobloxReleaseIp.py",
+        )
+{% endmacro %}
+
+{% macro infoblox_vmware_substrate_provider_spec() %}
+    provider_spec = read_vmw_spec(os.path.join("specs", "vSphereVM_provider_spec_f4_infoblox.yaml"))
+{% endmacro %}
+
+{% macro infoblox_blueprint_cred_inclusion() %}
+        BP_CRED_infoblox,
+{% endmacro %}
+
+    {# Linux blueprint INFOBLOX IPAM code sections #}
+
+{% macro infoblox_ahv_guest_customizations_linux() %}
+        filename=os.path.join("specs", "vm_name_cloud_init_data_f4_infoblox.yaml")
+{% endmacro %}
+
+    {# Windows blueprint INFOBLOX IPAM code sections #}
+
+{% macro infoblox_ahv_guest_customizations_windows() %}
+        filename=os.path.join("specs", "vm_name_sysprep_unattend_xml_f4_infoblox.xml")
+{% endmacro %}
+
+{# SOLARWINDS IPAM blueprint code sections #}
+
+{% macro solarwinds_endpoint() %}
+from calm.dsl.runbooks import CalmEndpoint as Endpoint
+
+SOLARWINDS_ENDPOINT="{{cookiecutter.solarwinds_endpoint}}"
+{% endmacro %}
+
+{% macro solarwinds_credential_secret() %}
+if file_exists(os.path.join(init_data["LOCAL_DIR"]["location"], "BP_CRED_solarwinds_PASSWORD")):
+    BP_CRED_solarwinds_PASSWORD = read_local_file("BP_CRED_solarwinds_PASSWORD")
+else:
+    BP_CRED_solarwinds_PASSWORD = "nutanix"
+{% endmacro %}
+
+{% macro solarwinds_credential_username() %}
+BP_CRED_solarwinds = basic_cred(
+    "{{cookiecutter.solarwinds_username}}",
+    BP_CRED_solarwinds_PASSWORD,
+    name="solarwinds",
+    type="PASSWORD",
+)
+{% endmacro %}
+
+{% macro solarwinds_profile_variables() %}
+    solarwinds_ip = CalmVariable.Simple(
+        "{{cookiecutter.solarwinds_ip}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=False,
+        is_mandatory=False,
+        is_hidden=True,
+        runtime=False,
+        description="",
+    )
+
+    network = CalmVariable.Simple(
+        "{{cookiecutter.network}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=True,
+        is_hidden=False,
+        description="Solarwinds managed subnet from which to get an IPv4 address.",
+    )
+
+    def_net1 = CalmVariable.Simple(
+        "{{cookiecutter.def_net1}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=True,
+        is_hidden=True,
+        description="Name of Solarwinds managed subnet 1 in cidr notation.",
+    )
+
+    def_net1_gw = CalmVariable.Simple(
+        "{{cookiecutter.def_net1_gw}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=True,
+        is_hidden=True,
+        description="Gateway for Solarwinds managed subnet 1.",
+    )
+
+    def_net1_mask = CalmVariable.Simple(
+        "{{cookiecutter.def_net1_mask}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=True,
+        is_hidden=True,
+        description="Subnet mask for Solarwinds managed subnet 1.",
+    )
+
+    def_net2 = CalmVariable.Simple(
+        "{{cookiecutter.def_net2}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=False,
+        is_hidden=True,
+        description="Name of Solarwinds managed subnet 1 in cidr notation.",
+    )
+
+    def_net2_gw = CalmVariable.Simple(
+        "{{cookiecutter.def_net2_gw}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=False,
+        is_hidden=True,
+        description="Gateway for Solarwinds managed subnet 1.",
+    )
+
+    def_net2_mask = CalmVariable.Simple(
+        "{{cookiecutter.def_net2_mask}}",
+        label="",
+        regex="",
+        validate_regex=False,
+        is_mandatory=False,
+        is_hidden=True,
+        description="Subnet mask for Solarwinds managed subnet 1.",
+    )
+
+    dns1 = CalmVariable.Simple(
+        "{{cookiecutter.dns1}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=False,
+        description="Please enter the IPv4 address of the primary DNS server",
+    )
+
+    dns2 = CalmVariable.Simple(
+        "{{cookiecutter.dns2}}",
+        label="",
+        regex="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+        validate_regex=True,
+        is_mandatory=True,
+        is_hidden=False,
+        runtime=False,
+        description="Please enter the IPv4 address of the secondary DNS server",
+    )
+{% endmacro %}
+
+{% macro solarwinds_substrate_actions() %}
+class ipam_actions(Substrate):
+    @action
+    def __pre_create__():
+
+        CalmTask.SetVariable.powershell(#SolarwindsGetIp
+            name="SolarWindsGetIp",
+            filename=shared_scripts_path + "solarwinds/SolarWindsGetIp.ps1",
+            target_endpoint=Endpoint.use_existing(SOLARWINDS_ENDPOINT),
+            variables=["vm_ip","subnet_mask","subnet_mask_bits","gateway","cidr"],
+        )
+
+    @action
+    def __post_delete__():
+
+        CalmTask.Exec.powershell(#solarwindsRemoveIp
+            name="SolarWindsRemoveIp",
+            filename=shared_scripts_path + "solarwinds/SolarWindsRemoveIp.ps1",
+            target_endpoint=Endpoint.use_existing(SOLARWINDS_ENDPOINT),
+        )
+{% endmacro %}
+
+{% macro solarwinds_vmware_substrate_provider_spec() %}
+    provider_spec = read_vmw_spec(os.path.join("specs", "vSphereVM_provider_spec_f5_solarwinds.yaml"))
+{% endmacro %}
+
+{% macro solarwinds_blueprint_cred_inclusion() %}
+        BP_CRED_solarwinds,
+{% endmacro %}
+
+    {# Linux blueprint SOLARWINDS IPAM code sections #}
+
+{% macro solarwinds_ahv_guest_customizations_linux() %}
+        filename=os.path.join("specs", "vm_name_cloud_init_data_f5_solarwinds.yaml")
+{% endmacro %}
+
+    {# Windows blueprint SOLARWINDS IPAM code sections #}
+
+{% macro solarwinds_ahv_guest_customizations_windows() %}
+        filename=os.path.join("specs", "vm_name_sysprep_unattend_xml_f5_solarwinds.xml")
+{% endmacro %}

@@ -1,0 +1,125 @@
+clone_is_template: false
+#!CUSTOMIZE information below
+cluster: {{cookiecutter.vsphere_cluster_name}}
+compute_drs_mode: true
+datastore: ''
+drs_mode: true
+folder:
+  delete_empty_folder: false
+  #!CUSTOMIZE information below
+  existing_path: {{cookiecutter.vcenter_folder_name}}
+  new_path: ''
+host: ''
+name: '@@{vm_name}@@'
+resources:
+  #!CUSTOMIZE information below
+  account_uuid: {{cookiecutter.vcenter_accountid}}
+  controller_list:
+  - bus_sharing: noSharing
+    controller_type: ParaVirtualSCSIController
+    key: 1001
+    type: ''
+  cpu_hot_add: false
+  disk_list:
+  - adapter_type: SCSI
+    controller_key: 1001
+    device_slot: 0
+    disk_mode: persistent
+    disk_size_mb: 51200
+    disk_type: disk
+    iso_path: ''
+    location: ''
+    type: ''
+  guest_customization:
+    cloud_init: ''
+    customization_name: ''
+    customization_type: GUEST_OS_WINDOWS
+    type: ''
+    windows_data:
+      auto_logon: true
+      command_list:
+      - net user administrator @@{windows.secret}@@
+      - logoff
+      computer_name: '@@{vm_name}@@'
+      dns_primary: ''
+      dns_search_path: []
+      dns_secondary: ''
+      dns_tertiary: ''
+      domain: ''
+      domain_password: null
+      domain_user: ''
+      full_name: '@@{vm_requester_name}@@'
+      is_domain: false
+      login_count: 1
+      network_settings:
+      - gateway_alternate: ''
+        gateway_default: ''
+        ip: ''
+        is_dhcp: true
+        name: ''
+        subnet_mask: ''
+        type: ''
+      organization_name: '@@{org}@@'
+      password:
+        attrs:
+          is_secret_modified: true
+          secret_reference: {}
+        value: <REPLACE_ME_WITH_SUPERSECRET>
+      product_id: '@@{product_key}@@'
+      timezone: '105'
+      type: ''
+      workgroup: WORKGROUP
+  memory_hot_plug: false
+  memory_size_mib: {{cookiecutter.vm_memory_mb}}
+  nic_list: []
+  num_sockets: {{cookiecutter.vm_vcpus}}
+  num_vcpus_per_socket: {{cookiecutter.vm_vcpus_core}}
+  power_state: poweron
+  tag_list:
+  #!CUSTOMIZE information below
+  - tag_id: {{cookiecutter.vcenter_vm_tagid}}
+    type: ''
+  template_controller_list:
+  - bus_sharing: noSharing
+    controller_type: VirtualLsiLogicSASController
+    is_deleted: false
+    key: 1000
+    type: ''
+  template_disk_list:
+  - adapter_type: SCSI
+    controller_key: 1000
+    device_slot: 0
+    disk_mode: persistent
+    #!CUSTOMIZE information below
+    disk_size_mb: {{cookiecutter.vcenter_windows_template_disk_size_mb}}
+    disk_type: disk
+    is_deleted: false
+    iso_path: ''
+    key: 2000
+    #!CUSTOMIZE information below
+    location: {{cookiecutter.vcenter_windows_template_location}}
+    type: ''
+  - adapter_type: IDE
+    controller_key: 200
+    device_slot: 0
+    disk_mode: persistent
+    disk_size_mb: -1
+    disk_type: cdrom
+    is_deleted: false
+    iso_path: ''
+    key: 3000
+    location: ''
+    type: ''
+  template_nic_list:
+  - is_deleted: false
+    key: 4000
+    #!CUSTOMIZE portgroup name below
+    net_name: {{cookiecutter.vcenter_network_vim_key}}
+    nic_type: vmxnet3
+    type: ''
+  type: ''
+storage_drs_mode: true
+#!CUSTOMIZE below information
+storage_pod: {{cookiecutter.vcenter_storage_pod_name}}
+template: {{cookiecutter.vcenter_windows_template_id}}
+type: PROVISION_VMWARE_VM

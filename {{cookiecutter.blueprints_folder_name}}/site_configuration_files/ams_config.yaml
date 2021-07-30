@@ -1,0 +1,72 @@
+default_context:
+    blueprints_folder_name: "blueprints_ams"
+    blueprintname: "ams_blueprint"
+
+    vm_memory_gb: 2
+    vm_memory_mb: 2048
+    vm_vcpus: 1
+    vm_vcpus_core: 2
+
+    linux_username: "centos"
+    windows_username: "administrator"
+    prism_central_username: "stephane.bourdeaud@emeagso.lab"
+    active_directory_username: "sbourdeaud@gso.lab"
+
+    ahv_centos7_image_name: "CentOS_7_Cloud"
+    ahv_windows_image_name: "pracdev-cita-calm-ms-windows-2019"
+    ahv_network_name: "VLAN99-DHCP-01"
+    ahv_cluster_name: "Lancelot"
+
+    vsphere_cluster_name: "ROCKET"
+    vcenter_folder_name: "pracdev-cita"
+    vcenter_accountid: "01eccf8a-e870-530b-c3a5-1bff2ed2f650"
+    vcenter_vm_tagid: "urn:vmomi:InventoryServiceTag:3b455b63-7927-4336-8186-d4e0bf2d976f:GLOBAL"
+    vcenter_network_vim_key: "key-vim.host.PortGroup-568"
+    vcenter_storage_pod_name: "RocketStorage"
+
+    vcenter_centos7_template_disk_size_mb: 16384
+    vcenter_centos7_template_location: "ds:///vmfs/volumes/be77b032-1ec18851/"
+    vcenter_centos7_template_id: "503cec9b-c267-1da4-d12e-f5806349c6a6"
+
+    vcenter_windows_template_disk_size_mb: 61440
+    vcenter_windows_template_location: "ds:///vmfs/volumes/be77b032-1ec18851/"
+    vcenter_windows_template_id: "503c5d4c-cd32-5e27-f54f-3cde7892d191"
+
+    vm_name: "cita-l1"
+    domain: "emeagso.lab"
+    email_sender: "stephane.bourdeaud@nutanix.com"
+    vm_requester_name: "Stephane Bourdeaud"
+    requester_email: "stephane.bourdeaud@nutanix.com"
+    smtp_server: "10.40.64.35"
+    prism_central_ip: "127.0.0.1"
+    org: "Nutanix"
+
+    public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9GE/gov8gOPsSkKVeejG5NYTJTQGNFCsJOXFcszhd1s1ixS1ClVZs3MduB1fWSvY8Vjzs+jD5VkW7SdwxEQQmOvyF8sHGNM1s4FGNgnRIvKXlPaXQSe9TUEl52xJa7G0JwggiG4kNgCtJmunK9cXZMj+iTQqSwdGvidOFdMxTbmSjlTNEE4kMIP4jiyZEKztVbz4i9+bI/Sq8cQVX+pNF6XTjxqUgDH15KIejnXw6QDH26yv6KWbSjtRl+8HvE1yNtJh9yXDEJ1pt4jcvE2SHNfFYlY8HM9qyymeVkL7SzL3u6dmkN7ospqiNgJVEW/iOATUHICLZpSXj1kr73xFB"
+
+    product_key: "N2G46-YYJY2-JQXBB-TBB4M-2PR8F"
+
+    vm_ip: "127.0.0.1"
+    gateway: "127.0.0.1"
+    subnet_mask: "255.255.252.0"
+    dns1: "10.48.108.10"
+    dns2: "10.48.104.10"
+
+    phpipam_username: "sbourdeaud"
+    phpipam_ip: "phpipam.xpert-services.eu"
+    phpipam_app_id: "calm"
+    phpipam_section_id: "4"
+    vlan_id: "568"
+
+    infoblox_username: "calm"
+    infoblox_ip: "infoblox.xpert-services.eu"
+
+    solarwinds_username: "admin"
+    solarwinds_ip: "10.48.108.4"
+    solarwinds_endpoint: "CITA_PRACDEV_AD_SERVER"
+    network: "10.48.108.0"
+    def_net1: "10.48.108.0"
+    def_net1_mask: "255.255.252.0"
+    def_net1_gw: "10.48.108.1"
+    def_net2: ""
+    def_net2_mask: ""
+    def_net2_gw: ""

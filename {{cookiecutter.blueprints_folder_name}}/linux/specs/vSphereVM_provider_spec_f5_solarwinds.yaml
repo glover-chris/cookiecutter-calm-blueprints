@@ -1,0 +1,121 @@
+clone_is_template: false
+#!CUSTOMIZE information below
+cluster: {{cookiecutter.vsphere_cluster_name}}
+compute_drs_mode: true
+datastore: ''
+drs_mode: true
+folder:
+  delete_empty_folder: false
+  #!CUSTOMIZE information below
+  existing_path: {{cookiecutter.vcenter_folder_name}}
+  new_path: ''
+host: ''
+name: '@@{vm_name}@@'
+resources:
+  #!CUSTOMIZE information below
+  account_uuid: {{cookiecutter.vcenter_accountid}}
+  controller_list:
+  - bus_sharing: noSharing
+    controller_type: ParaVirtualSCSIController
+    key: 1001
+    type: ''
+  cpu_hot_add: false
+  disk_list:
+  - adapter_type: SCSI
+    controller_key: 1001
+    device_slot: 0
+    disk_mode: persistent
+    disk_size_mb: 51200
+    disk_type: disk
+    iso_path: ''
+    location: ''
+    type: ''
+  guest_customization:
+    cloud_init: |
+      #cloud-config
+      disable_root: False
+      cloud_config_modules: 
+        - resolv_conf
+      hostname: @@{vm_name}@@
+      fqdn: @@{vm_name}@@.@@{domain}@@
+      users:
+        - default
+        - name: @@{linux.username}@@
+          ssh-authorized-keys:
+            - @@{public_key}@@
+          sudo: ['ALL=(ALL) NOPASSWD:ALL']
+      write_files:
+        - path: /etc/sysconfig/network-scripts/ifcfg-ens192
+          content: |
+            IPADDR=@@{vm_ip}@@
+            NETMASK=@@{subnet_mask}@@
+            GATEWAY=@@{gateway}@@
+            BOOTPROTO=static
+            ONBOOT=yes
+            DEVICE=ens192
+      manage_resolv_conf: true
+      resolv_conf:
+        nameservers: ['@@{dns1}@@','@@{dns2}@@']
+        domain: '@@{domain}@@'
+        options:
+          attempts: 5
+          timeout: 15
+      runcmd:
+        - [sudo, ifdown, eth0]
+        - [sudo, ifup, eth0]
+        - [sudo, systemctl, restart, network]
+        - [sudo, systemctl, mask, cloud-init-local, cloud-init, cloud-config, cloud-final]
+        - [eject]
+      package_upgrade: true
+      power_state:
+        delay: "+1"
+        mode: reboot
+        message: Rebooting after cloud-init
+        timeout: 30
+        condition: True
+    customization_name: ''
+    customization_type: GUEST_OS_LINUX
+    type: ''
+  memory_hot_plug: false
+  memory_size_mib: {{cookiecutter.vm_memory_mb}}
+  nic_list: []
+  num_sockets: {{cookiecutter.vm_vcpus}}
+  num_vcpus_per_socket: {{cookiecutter.vm_vcpus_core}}
+  power_state: poweron
+  tag_list:
+  #!CUSTOMIZE information below
+  - tag_id: {{cookiecutter.vcenter_vm_tagid}}
+    type: ''
+  template_controller_list:
+  - bus_sharing: noSharing
+    controller_type: ParaVirtualSCSIController
+    is_deleted: false
+    key: 1000
+    type: ''
+  template_disk_list:
+  - adapter_type: SCSI
+    controller_key: 1000
+    device_slot: 0
+    disk_mode: persistent
+    #!CUSTOMIZE information below
+    disk_size_mb: {{cookiecutter.vcenter_centos7_template_disk_size_mb}}
+    disk_type: disk
+    is_deleted: false
+    iso_path: ''
+    key: 2000
+    #!CUSTOMIZE information below
+    location: {{cookiecutter.vcenter_centos7_template_location}}
+    type: ''
+  template_nic_list:
+  - is_deleted: false
+    key: 4000
+    #!CUSTOMIZE information below
+    net_name: {{cookiecutter.vcenter_network_vim_key}}
+    nic_type: vmxnet3
+    type: ''
+  type: ''
+storage_drs_mode: true
+#!CUSTOMIZE information below
+storage_pod: {{cookiecutter.vcenter_storage_pod_name}}
+template: {{cookiecutter.vcenter_centos7_template_id}}
+type: PROVISION_VMWARE_VM

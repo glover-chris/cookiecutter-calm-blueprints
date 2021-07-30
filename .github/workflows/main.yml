@@ -1,0 +1,81 @@
+name: calm-blueprint-build-launch
+on: [pull_request]
+
+jobs:
+  calm_dsl_job:
+    runs-on: self-hosted
+    #container: docker://ntnx/calm-dsl:latest
+    strategy:
+      matrix:
+        blueprints: [linux]
+        flavors: [f1_dhcp]
+        app_profile: [AHV]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: 'true'
+          ssh-key: ${{ secrets.SB_KEY }}
+      - name: calm-dsl init
+        env:
+          BLUEPRINT: ${{ matrix.blueprints }}
+          PC_IP: ${{ secrets.PHX_PC_IP }}
+          PC_USER: ${{ secrets.PHX_PC_USER }}
+          PC_SECRET: ${{ secrets.PHX_PC_SECRET }}
+        run: |
+          source /home/runner/calm-dsl/venv/bin/activate
+          calm init dsl -i $PC_IP -u $PC_USER -p $PC_SECRET -P 9440 -pj pracdev-cap
+      - name: calm-dsl create bp
+        env:
+          BLUEPRINT: ${{ matrix.blueprints }}
+          FLAVOR: ${{ matrix.flavors }}
+          PROFILE: ${{ matrix.app_profile }}
+        run: |
+          #pip install -U cookiecutter
+          if [ ! -d "./blueprints" ]; then cookiecutter $(pwd) --no-input -v; fi
+          mkdir ./blueprints/$BLUEPRINT/.local
+          echo "${{ secrets.SB_KEY }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_linux_KEY
+          echo "${{ secrets.SB }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_root_PASSWORD
+          echo "${{ secrets.SB }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_guest_os_PASSWORD
+          echo "${{ secrets.SB }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_prism_central_PASSWORD
+          echo "${{ secrets.SB }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_active_directory_PASSWORD
+          echo "${{ secrets.SB }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_phpipam_PASSWORD
+          echo "${{ secrets.INFOBLOX }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_infoblox_PASSWORD
+          echo "${{ secrets.SOLARWINDS }}" > ./blueprints/$BLUEPRINT/.local/BP_CRED_solarwinds_PASSWORD
+          sed -i "s/<REPLACE_ME_WITH_SUPERSECRET>/$(date +%s | sha256sum | base64 | head -c 32 ; echo)/g" ./blueprints/$BLUEPRINT/specs/vSphereVM_provider_spec_$FLAVOR.yaml
+          sed -i "s/<INSERT_COMMIT_SHA_HERE>/${GITHUB_SHA:0:7}-$(echo $PROFILE | head -c 1)$(echo $FLAVOR | head -c 2)/g" ./blueprints/$BLUEPRINT/runtime_variables_$FLAVOR.py
+          source /home/runner/calm-dsl/venv/bin/activate
+          calm create bp --file ./blueprints/$BLUEPRINT/blueprint_$FLAVOR.py --name ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7}
+      - name: calm-dsl launch bp
+        env:
+          PROFILE: ${{ matrix.app_profile }}
+          BLUEPRINT: ${{ matrix.blueprints }}
+          FLAVOR: ${{ matrix.flavors }}
+        run: |
+          source /home/runner/calm-dsl/venv/bin/activate
+          calm launch bp ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7} --app_name ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7} --launch_params ./blueprints/$BLUEPRINT/runtime_variables_$FLAVOR.py -p $PROFILE
+          app_status=$(calm describe app ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7} | grep -m 1 "Status:" | awk '{print $2}')
+          while [ $app_status == "provisioning" ]; do sleep 60; app_status=$(calm describe app ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7} | grep -m 1 "Status:" | awk '{print $2}'); echo "${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7} status is $app_status"; done
+          if [[ "$app_status" == "running" ]]; then calm delete app ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7}; else echo "not good :("; exit 1; fi
+      - name: calm-dsl publish then delete bp
+        env:
+          BLUEPRINT: ${{ matrix.blueprints }}
+          FLAVOR: ${{ matrix.flavors }}
+          PROFILE: ${{ matrix.app_profile }}
+        run: |
+          source /home/runner/calm-dsl/venv/bin/activate
+          calm delete bp ${GITHUB_ACTOR:0:5}-$(echo $GITHUB_REPOSITORY | tr "/" " " | awk '{print $2}')-${BLUEPRINT:0:3}-${FLAVOR:0:2}-$PROFILE-${GITHUB_SHA:0:7}
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@master
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_INCOMING_WEBHOOK }}
+        with:
+          status: ${{ job.status }}
+          notification_title: "${{ matrix.app_profile }} ${{ matrix.blueprints }} ${{ matrix.flavors }}"
+          notify_when: 'success,failure,warnings'
+          footer: 'Sent from GitHub actions nutanixservices org'
+
+#? how to know when to publish in the marketplace?
+#todo: get version of published item: calm get marketplace bps -n cita-starter-windows-dhcp | grep "cita-starter-windows-dhcp" | awk -F '|' '{print $7}' | sed 's/ //g'
+#todo: publish blueprint to marketplace with creds and skip approval: calm publish bp -v 1.0.0 -n cita-starter-windows-dhcp -pm -i windows -p pracdev-cap -c DevOps -w cita-starter-windows-dhcp
