@@ -1,4 +1,0 @@
-default_context:
-    blueprints_folder_name: "blueprints"
-    blueprintname: "from_pipeline"
-    use_dhcp: "yes"

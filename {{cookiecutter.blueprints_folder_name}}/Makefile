@@ -33,6 +33,9 @@ endif
 GIT_COMMIT_ID     := $(shell git rev-parse --short HEAD)
 GIT_BRANCH_NAME   := $(shell git rev-parse --abbrev-ref HEAD | head -c14)
 
+## Blueprint file location variables.
+BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX := {{cookiecutter.blueprintname}}
+
 ## Blueprint naming variables.
 BLUEPRINT_SUFFIX_NAME := ${GIT_BRANCH_NAME}-${GIT_COMMIT_ID}
 
@@ -69,23 +72,20 @@ CALM_DSL_LOCAL_DIR_LOCATION = $(CURDIR)/.local/${CALM_ENVIRONMENT}/
 export CALM_DSL_LOCAL_DIR_LOCATION
 
 INIT_DSL_LOCATION = $(CURDIR)
+
+init-dsl: init-dsl-secrets init-dsl-config
+
+init-dsl-secrets:
+	@read -s -p "Enter the username for the Calm environment/IP address you entered in the cookiecutter: " username ; \
+	read -s -p "Enter the password for the Calm environment/IP address you entered in the cookiecutter: " password ; \
+	$(INIT_DSL_LOCATION)/dsl-init-secrets.sh ${CALM_ENVIRONMENT} $$username $$password
+	@rm -rf ~/.calm/dsl.db ~/.calm/init.ini
+
 init-dsl-config: print-env
 	# initialize target prism central cluster calm instance
 	calm init dsl $(DSL_INIT_PARAMS) --project $(CALM_PROJECT) --local_dir $(CALM_DSL_LOCAL_DIR_LOCATION) --config $(CALM_DSL_LOCAL_DIR_LOCATION)config.ini --db_file $(CALM_DSL_LOCAL_DIR_LOCATION)dsl.db
 	calm get projects -n ${CALM_PROJECT}
 	calm get server status
-
-#init-dsl-secrets:
-#	$(shell read -p "Enter the username for the calm environment you entered: " username; \
-#	read -p "Enter the password for the calm environment you entered: " password; \
-#	echo $(INIT_DSL_LOCATION); \
-#	-echo $(INIT_DSL_LOCATION)/dsl-init-secrets.sh phx $$username $$password)
-
-init-dsl-secrets:
-	@read -s -p "Enter the username for the calm environment you entered: " username ; \
-	read -s -p "Enter the password for the calm environment you entered: " password ; \
-	$(INIT_DSL_LOCATION)/dsl-init-secrets.sh ${CALM_ENVIRONMENT} $$username $$password
-
 
 ####################################################################
 ### COOKIECUTTER TASKS - Commands to create various cookiecutter projects locally.
@@ -159,6 +159,11 @@ cookiecutter-ams-solarwinds_bps: ## Creates Cookiecutter Amsterdam Solarwinds bl
 ############################################################################################################
 ### DEVELOPMENT TESTING - COOKIECUTTER AND CALM DSL CREATE BLUEPRINT TASKS
 ### PURPOSE: Create local cookiecutter projects and have calm dsl create the corresdponding blueprints in the respective sites, i.e., PHX and AMS
+
+create-linux-dhcp-bp:
+	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
+	calm compile bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py
+	calm create bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py --name ${LINUX_BP_NAME_DHCP} --force
 
 create-bps-user-input:
 	make cookiecutter-bps-user-input
