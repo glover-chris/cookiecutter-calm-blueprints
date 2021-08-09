@@ -1,3 +1,5 @@
+blueprints/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +129,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Mac stuff
+.DS_Store
+
+# Calm stuff
+.local
+Dockerfile
+dist/
+requirements.txt
+.bashrc
+.bash_completion
+.dev
+.devcontainer/
+.scratch/.calm
+tmp/
+# direnv stuff
+.envrc.bkup
+
+# VSCode stuff
+.vscode

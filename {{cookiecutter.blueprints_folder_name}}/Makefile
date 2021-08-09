@@ -66,18 +66,25 @@ print-env:
 ## CALM_ENVIRONMENT default is PHX.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald.
 ## For sites other than GSO Phoenix or Amsterdam, pass in the approriate IP for the prism central calm instance, i.e., make init-dsl-config PC_IP_ADDRESS= 10.x.x.x CALM_ENVIRONMENT=oswald CALM_PROJECT=default
 CALM_DSL_LOCAL_DIR_LOCATION = $(CURDIR)/.local/${CALM_ENVIRONMENT}/
+export CALM_DSL_LOCAL_DIR_LOCATION
 
+INIT_DSL_LOCATION = $(CURDIR)
 init-dsl-config: print-env
 	# initialize target prism central cluster calm instance
 	calm init dsl $(DSL_INIT_PARAMS) --project $(CALM_PROJECT) --local_dir $(CALM_DSL_LOCAL_DIR_LOCATION) --config $(CALM_DSL_LOCAL_DIR_LOCATION)config.ini --db_file $(CALM_DSL_LOCAL_DIR_LOCATION)dsl.db
 	calm get projects -n ${CALM_PROJECT}
 	calm get server status
 
-iinit-dsl-secrets:
-	$(shell read -p "Enter the username for the calm environment you entered: " username; \
-	read -p "Enter the password for the calm environment you entered: " password; \
-	echo $$username $$password \
-	./dsl-init-secrets.sh {{cookiecutter.calm_environment}} )
+#init-dsl-secrets:
+#	$(shell read -p "Enter the username for the calm environment you entered: " username; \
+#	read -p "Enter the password for the calm environment you entered: " password; \
+#	echo $(INIT_DSL_LOCATION); \
+#	-echo $(INIT_DSL_LOCATION)/dsl-init-secrets.sh phx $$username $$password)
+
+init-dsl-secrets:
+	@read -s -p "Enter the username for the calm environment you entered: " username ; \
+	read -s -p "Enter the password for the calm environment you entered: " password ; \
+	$(INIT_DSL_LOCATION)/dsl-init-secrets.sh ${CALM_ENVIRONMENT} $$username $$password
 
 
 ####################################################################
