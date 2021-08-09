@@ -105,22 +105,7 @@ delete-linux-ipam-bp:
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm delete bp ${LINUX_IPAM_BP_NAME}
 
+## Help listing makefile blocks
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
-NAME    := nutanixservices/cita-starter
-
-blueprints:
-	if [ ! -d "./blueprints" ]; then cookiecutter ./ --no-input -v; fi
-	#source ${CALMDSL}/venv/bin/activate
-	calm create bp --file ./blueprints/linux/blueprint_f1_dhcp.py --name cita-starter-linux-f1-dhcp
-	calm create bp --file ./blueprints/linux/blueprint_f2_static.py --name cita-starter-linux-f2-static
-	calm create bp --file ./blueprints/linux/blueprint_f3_phpipam.py --name cita-starter-linux-f3-phpipam
-	calm create bp --file ./blueprints/linux/blueprint_f4_infoblox.py --name cita-starter-linux-f4-infoblox
-	calm create bp --file ./blueprints/linux/blueprint_f5_solarwinds.py --name cita-starter-linux-f5-solarwinds
-	calm create bp --file ./blueprints/windows/blueprint_f1_dhcp.py --name cita-starter-windows-f1-dhcp
-	calm create bp --file ./blueprints/windows/blueprint_f2_static.py --name cita-starter-windows-f2-static
-	calm create bp --file ./blueprints/windows/blueprint_f3_phpipam.py --name cita-starter-windows-f3-phpipam
-	calm create bp --file ./blueprints/windows/blueprint_f4_infoblox.py --name cita-starter-windows-f4-infoblox
-	calm create bp --file ./blueprints/windows/blueprint_f5_solarwinds.py --name cita-starter-windows-f5-solarwinds
