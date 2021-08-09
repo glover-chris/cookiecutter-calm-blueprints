@@ -35,20 +35,12 @@ GIT_BRANCH_NAME   := $(shell git rev-parse --abbrev-ref HEAD | head -c14)
 
 ## Blueprint file location variables.
 BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX := {{cookiecutter.blueprintname}}
+BLUEPRINT_COOKIECUTTER_IPAM_SOLUTION := {{cookiecutter.ipam_solution}}
 
 ## Blueprint naming variables.
 BLUEPRINT_SUFFIX_NAME := ${GIT_BRANCH_NAME}-${GIT_COMMIT_ID}
 
-LINUX_BP_NAME_DHCP := "cita-starter-lin-dhcp-${BLUEPRINT_SUFFIX_NAME}"
-LINUX_BP_NAME_STATIC_IP := "cita-starter-lin-static-ip-${BLUEPRINT_SUFFIX_NAME}"
-LINUX_BP_NAME_PHPIPAM := "cita-starter-lin-phpipam-${BLUEPRINT_SUFFIX_NAME}"
-LINUX_BP_NAME_INFOBLOX := "cita-starter-lin-infoblox-${BLUEPRINT_SUFFIX_NAME}"
-LINUX_BP_NAME_SOLARWINDS := "cita-starter-lin-solarwinds-${BLUEPRINT_SUFFIX_NAME}"
-WINDOWS_BP_NAME_DHCP := "cita-starter-win-dhcp-${BLUEPRINT_SUFFIX_NAME}"
-WINDOWS_BP_NAME_STATIC_IP := "cita-starter-win-static-ip-${BLUEPRINT_SUFFIX_NAME}"
-WINDOWS_BP_NAME_PHPIPAM := "cita-starter-win-phpipam-${BLUEPRINT_SUFFIX_NAME}"
-WINDOWS_BP_NAME_INFOBLOX := "cita-starter-win-infoblox-${BLUEPRINT_SUFFIX_NAME}"
-WINDOWS_BP_NAME_SOLARWINDS := "cita-starter-win-solarwinds-${BLUEPRINT_SUFFIX_NAME}"
+LINUX_IPAM_BP_NAME := "cita-starter-lin-${BLUEPRINT_COOKIECUTTER_IPAM_SOLUTION}-${BLUEPRINT_SUFFIX_NAME}"
 
 # Export all variables.
 export
@@ -96,233 +88,22 @@ cookiecutter-bps-user-input:
 	git submodule update --init
 	cookiecutter -v ./ -f
 
-    ## Phoenix GSOLAB SPECIFIC COMMANDS
-
-cookiecutter-phx-bps-user-input: ## Creates Cookiecutter Phoenix IPAM blueprints locally asking for user input for site config and cookiecutter.json variable values
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml
-
-cookiecutter-phx-bps-pipeline: ## Creates Cookiecutter Phoenix IPAM blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml --no-input
-
-cookiecutter-phx-dhcp_bps: ## Creates Cookiecutter Phoenix DHCP blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml ipam_solution=dhcp -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_dhcp -f --no-input
-
-cookiecutter-phx-static_ip_bps: ## Creates Cookiecutter Phoenix Static IP blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml ipam_solution=static_ip -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_staticip -f --no-input
-
-cookiecutter-phx-phpipam_bps: ## Creates Cookiecutter Phoenix PHPIpam blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml ipam_solution=phpipam -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_phpipam -f --no-input
-
-cookiecutter-phx-infoblox_bps: ## Creates Cookiecutter Phoenix InfoBlox blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml ipam_solution=infoblox -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_infoblox -f --no-input
-
-cookiecutter-phx-solarwinds_bps: ## Creates Cookiecutter Phoenix Solarwinds blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/phx_config.yaml ipam_solution=solarwinds -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_solarwinds -f --no-input
-
-    ## AMSTERDAM GSOLAB SPECIFIC COMMANDS
-
-cookiecutter-ams-bps-user-input: ## Creates Cookiecutter Amsterdam IPAM blueprints locally asking for user input for site config and cookiecutter.json variable values
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml
-
-cookiecutter-ams-bps-pipeline: ## Creates Cookiecutter Amsterdam IPAM blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml --no-input
-
-cookiecutter-ams-dhcp_bps: ## Creates Cookiecutter Amsterdam DHCP blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml ipam_solution=dhcp -o ./blueprints_ams_dhcp -f --no-input
-
-cookiecutter-ams-static_ip_bps: ## Creates Cookiecutter Amsterdam Static IP blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml ipam_solution=static_ip -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_staticip -f --no-input
-
-cookiecutter-ams-phpipam_bps: ## Creates Cookiecutter Amsterdam PHPIpam blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml ipam_solution=phpipam -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_phpipam -f --no-input
-
-cookiecutter-ams-infoblox_bps:## Creates Cookiecutter Amsterdam InfoBlox blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml ipam_solution=infoblox -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_infoblox -f --no-input
-
-cookiecutter-ams-solarwinds_bps: ## Creates Cookiecutter Amsterdam Solarwinds blueprints locally with default values from site config and cookiecutter.json
-	git submodule update --init
-	cookiecutter -v ./ --config-file ./site_configuration_files/ams_config.yaml ipam_solution=solarwinds -o ./blueprints_$(CALM_ENVIRONMENT_LOWER)_solarwinds -f --no-input
-
 ############################################################################################################
-### DEVELOPMENT TESTING - COOKIECUTTER AND CALM DSL CREATE BLUEPRINT TASKS
-### PURPOSE: Create local cookiecutter projects and have calm dsl create the corresdponding blueprints in the respective sites, i.e., PHX and AMS
+### DEVELOPMENT TESTING - CREATE BLUEPRINT TASKS
+### PURPOSE: Create the corresdponding blueprints in the respective sites, i.e., PHX and AMS
 
-create-linux-dhcp-bp:
+create-linux-ipam-bp:
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm compile bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py
-	calm create bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py --name ${LINUX_BP_NAME_DHCP} --force
-
-create-bps-user-input:
-	make cookiecutter-bps-user-input
-	calm init dsl --port ${PC_PORT} --username ${PC_USER} --password ${PC_PASS}
-
-    ## Phoenix and Amsterdam GSOLAB SPECIFIC COMMAND to create all blueprints in both GSOLAB sites.
-create-all-bps: create-phx-all_bps create-ams-all_bps  ## Creates ALL Cookiecutter Phoenix and Amsterdam IPAM blueprints locally and in Calm instance
-
-    ## Phoenix GSOLAB SPECIFIC COMMANDS
-
-create-phx-all_bps: create-phx-dhcp_bps create-phx-static_ip_bps create-phx-phpipam_bps create-phx-infoblox_bps create-phx-solarwinds_bps ## Creates all Cookiecutter Phoenix IPAM blueprints locally and in CALM instance
-
-create-phx-dhcp_bps: ## Creates Cookiecutter Phoenix DHCP blueprints locally and in CALM instance
-	make cookiecutter-phx-dhcp_bps
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm compile bp -f ./blueprints_phx_dhcp/blueprints_phx/linux/linux_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_dhcp/blueprints_phx/linux/linux_phx_blueprint.py --name ${LINUX_BP_NAME_DHCP} --force
-	calm compile bp -f ./blueprints_phx_dhcp/blueprints_phx/windows/windows_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_dhcp/blueprints_phx/windows/windows_phx_blueprint.py --name ${WINDOWS_BP_NAME_DHCP} --force
-
-create-phx-static_ip_bps:## Creates Cookiecutter Phoenix Static IP blueprints locally and in CALM instance
-	make cookiecutter-phx-static_ip_bps
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm compile bp -f ./blueprints_phx_staticip/blueprints_phx/linux/linux_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_staticip/blueprints_phx/linux/linux_phx_blueprint.py --name ${LINUX_BP_NAME_STATIC_IP} --force
-	calm compile bp -f ./blueprints_phx_staticip/blueprints_phx/windows/windows_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_staticip/blueprints_phx/windows/windows_phx_blueprint.py --name ${WINDOWS_BP_NAME_STATIC_IP} --force
-
-create-phx-phpipam_bps:## Creates Cookiecutter Phoenix PHPIpam blueprints locally and in CALM instance
-	make cookiecutter-phx-phpipam_bps
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm compile bp -f ./blueprints_phx_phpipam/blueprints_phx/linux/linux_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_phpipam/blueprints_phx/linux/linux_phx_blueprint.py --name ${LINUX_BP_NAME_PHPIPAM} --force
-	calm compile bp -f ./blueprints_phx_phpipam/blueprints_phx/windows/windows_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_phpipam/blueprints_phx/windows/windows_phx_blueprint.py --name ${WINDOWS_BP_NAME_PHPIPAM} --force
-
-create-phx-infoblox_bps:## Creates Cookiecutter Phoenix InfoBlox blueprints locally and in CALM instance
-	make cookiecutter-phx-infoblox_bps
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm compile bp -f ./blueprints_phx_infoblox/blueprints_phx/linux/linux_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_infoblox/blueprints_phx/linux/linux_phx_blueprint.py --name ${LINUX_BP_NAME_INFOBLOX} --force
-	calm compile bp -f ./blueprints_phx_infoblox/blueprints_phx/windows/windows_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_infoblox/blueprints_phx/windows/windows_phx_blueprint.py --name ${WINDOWS_BP_NAME_INFOBLOX} --force
-
-create-phx-solarwinds_bps: ## Creates Cookiecutter Phoenix Solarwinds blueprints locally and in CALM instance
-	make cookiecutter-phx-solarwinds_bps
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm compile bp -f ./blueprints_phx_solarwinds/blueprints_phx/linux/linux_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_solarwinds/blueprints_phx/linux/linux_phx_blueprint.py --name ${LINUX_BP_NAME_SOLARWINDS} --force
-	calm compile bp -f ./blueprints_phx_solarwinds/blueprints_phx/windows/windows_phx_blueprint.py
-	calm create bp -f ./blueprints_phx_solarwinds/blueprints_phx/windows/windows_phx_blueprint.py --name ${WINDOWS_BP_NAME_SOLARWINDS} --force
-
-    ## AMSTERDAM GSOLAB SPECIFIC COMMANDS
-
-create-ams-all_bps: create-ams-dhcp_bps create-ams-static_ip_bps create-ams-phpipam_bps create-ams-infoblox_bps create-ams-solarwinds_bps ## Creates all Cookiecutter Amsterdam IPAM blueprints locally and in CALM instance
-
-create-ams-dhcp_bps: ## Creates Cookiecutter Amsterdam DHCP blueprints locally and in CALM instance
-	make cookiecutter-ams-dhcp_bps
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm compile bp -f ./blueprints_ams_dhcp/blueprints_ams/linux/linux_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_dhcp/blueprints_ams/linux/linux_ams_blueprint.py --name ${LINUX_BP_NAME_DHCP} --force
-	calm compile bp -f ./blueprints_ams_dhcp/blueprints_ams/windows/windows_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_dhcp/blueprints_ams/windows/windows_ams_blueprint.py --name ${WINDOWS_BP_NAME_DHCP} --force
-
-create-ams-static_ip_bps: ## Creates Cookiecutter Amsterdam Static IP blueprints locally and in CALM instance
-	make cookiecutter-ams-static_ip_bps
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm compile bp -f ./blueprints_ams_staticip/blueprints_ams/linux/linux_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_staticip/blueprints_ams/linux/linux_ams_blueprint.py --name ${LINUX_BP_NAME_STATIC_IP} --force
-	calm compile bp -f ./blueprints_ams_staticip/blueprints_ams/windows/windows_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_staticip/blueprints_ams/windows/windows_ams_blueprint.py --name ${WINDOWS_BP_NAME_STATIC_IP} --force
-
-create-ams-phpipam_bps: ## Creates Cookiecutter Amsterdam PHPIpam blueprints locally and in CALM instance
-	make cookiecutter-ams-phpipam_bps
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm compile bp -f ./blueprints_ams_phpipam/blueprints_ams/linux/linux_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_phpipam/blueprints_ams/linux/linux_ams_blueprint.py --name ${LINUX_BP_NAME_PHPIPAM} --force
-	calm compile bp -f ./blueprints_ams_phpipam/blueprints_ams/windows/windows_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_phpipam/blueprints_ams/windows/windows_ams_blueprint.py --name ${WINDOWS_BP_NAME_PHPIPAM} --force
-
-create-ams-infoblox_bps: ## Creates Cookiecutter Amsterdam InfoBlox blueprints locally and in CALM instance
-	make cookiecutter-ams-infoblox_bps
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm compile bp -f ./blueprints_ams_infoblox/blueprints_ams/linux/linux_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_infoblox/blueprints_ams/linux/linux_ams_blueprint.py --name ${LINUX_BP_NAME_INFOBLOX} --force
-	calm compile bp -f ./blueprints_ams_infoblox/blueprints_ams/windows/windows_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_infoblox/blueprints_ams/windows/windows_ams_blueprint.py --name ${WINDOWS_BP_NAME_INFOBLOX} --force
-
-create-ams-solarwinds_bps: ## Creates Cookiecutter Amsterdam Solarwinds blueprints locally and in CALM instance
-	make cookiecutter-ams-solarwinds_bps
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm compile bp -f ./blueprints_ams_solarwinds/blueprints_ams/linux/linux_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_solarwinds/blueprints_ams/linux/linux_ams_blueprint.py --name ${LINUX_BP_NAME_SOLARWINDS} --force
-	calm compile bp -f ./blueprints_ams_solarwinds/blueprints_ams/windows/windows_ams_blueprint.py
-	calm create bp -f ./blueprints_ams_solarwinds/blueprints_ams/windows/windows_ams_blueprint.py --name ${WINDOWS_BP_NAME_SOLARWINDS} --force
+	calm create bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py --name ${LINUX_IPAM_BP_NAME} --force
 
 ############################################################################################################
 ### DEVELOPMENT TESTING - COOKIECUTTER AND CALM DSL DELETE BLUEPRINT TASKS
 ### PURPOSE: Delete calm dsl created blueprints in the respective sites, i.e., PHX and AMS
 
-delete-all-bps: delete-phx-all_bps delete-ams-all_bps ## Deletes ALL Phoenix and Amsterdam IPAM blueprints in CALM instance
-
-    ## PHOENIX GSOLAB SPECIFIC COMMANDS
-
-delete-phx-all_bps: delete-phx-dhcp_bps delete-phx-static_ip_bps delete-phx-phpipam_bps delete-phx-infoblox_bps delete-phx-solarwinds_bps ## Deletes ALL Phoenix IPAM blueprints
-
-delete-phx-dhcp_bps: ## Deletes Phoenix DHCP blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm delete bp ${LINUX_BP_NAME_DHCP}
-	calm delete bp ${WINDOWS_BP_NAME_DHCP}
-
-delete-phx-static_ip_bps: ## Deletes Phoenix Static IP blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm delete bp ${LINUX_BP_NAME_STATIC_IP}
-	calm delete bp ${WINDOWS_BP_NAME_STATIC_IP}
-
-delete-phx-phpipam_bps: ## Deletes Phoenix PHPIpam blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm delete bp ${LINUX_BP_NAME_PHPIPAM}
-	calm delete bp ${WINDOWS_BP_NAME_PHPIPAM}
-
-delete-phx-infoblox_bps: ## Deletes Phoenix InfoBlox blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm delete bp ${LINUX_BP_NAME_INFOBLOX}
-	calm delete bp ${WINDOWS_BP_NAME_INFOBLOX}
-
-delete-phx-solarwinds_bps: ## Deletes Phoenix Solarwinds blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=PHX
-	calm delete bp ${LINUX_BP_NAME_SOLARWINDS}
-	calm delete bp ${WINDOWS_BP_NAME_SOLARWINDS}
-
-    ## AMSTERDAM GSOLAB SPECIFIC COMMANDS
-
-delete-ams-all_bps: delete-ams-dhcp_bps delete-ams-static_ip_bps delete-ams-phpipam_bps delete-ams-infoblox_bps delete-ams-solarwinds_bps ## Deletes ALL Amsterdam IPAM blueprints in CALM instance
-
-delete-ams-dhcp_bps: ## Deletes Amsterdam DHCP blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm delete bp ${LINUX_BP_NAME_DHCP}
-	calm delete bp ${WINDOWS_BP_NAME_DHCP}
-
-delete-ams-static_ip_bps: ## Deletes Amsterdam Static IP blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm delete bp ${LINUX_BP_NAME_STATIC_IP}
-	calm delete bp ${WINDOWS_BP_NAME_STATIC_IP}
-
-delete-ams-phpipam_bps: ## Deletes Amsterdam PHPIpam blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm delete bp ${LINUX_BP_NAME_PHPIPAM}
-	calm delete bp ${WINDOWS_BP_NAME_PHPIPAM}
-
-delete-ams-infoblox_bps: ## Deletes Amsterdam InfoBlox blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm delete bp ${LINUX_BP_NAME_INFOBLOX}
-	calm delete bp ${WINDOWS_BP_NAME_INFOBLOX}
-
-delete-ams-solarwinds_bps: ## Deletes Amsterdam Solarwinds blueprints in CALM instance
-	make init-dsl-config CALM_ENVIRONMENT=AMS
-	calm delete bp ${LINUX_BP_NAME_SOLARWINDS}
-	calm delete bp ${WINDOWS_BP_NAME_SOLARWINDS}
+delete-linux-ipam-bp:
+	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
+	calm delete bp ${LINUX_IPAM_BP_NAME}
 
 .PHONY: help
 help:
