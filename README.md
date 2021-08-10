@@ -29,51 +29,7 @@ In order to deploy one or more of those blueprints in a client environment, you 
 4. **Clone** this **git repository** to a workstation which has access to the client Calm/Prism Central instance and has calm-dsl installed.
 	`git clone https://github.com/nutanixservices/cita-starter` && `cd cita-starter`
 5. **Review `make help` to see the various options that can be executed via make commands.
-
-   ```bash
-   $ make help
-	cookiecutter-ams-bps-pipeline  Creates Cookiecutter Amsterdam IPAM blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-ams-bps-user-input Creates Cookiecutter Amsterdam IPAM blueprints locally asking for user input for site config and cookiecutter.json variable values
-	cookiecutter-ams-dhcp_bps      Creates Cookiecutter Amsterdam DHCP blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-ams-infoblox_bps  Creates Cookiecutter Amsterdam InfoBlox blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-ams-phpipam_bps   Creates Cookiecutter Amsterdam PHPIpam blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-ams-solarwinds_bps Creates Cookiecutter Amsterdam Solarwinds blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-ams-static_ip_bps Creates Cookiecutter Amsterdam Static IP blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-phx-bps-pipeline  Creates Cookiecutter Phoenix IPAM blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-phx-bps-user-input Creates Cookiecutter Phoenix IPAM blueprints locally asking for user input for site config and cookiecutter.json variable values
-	cookiecutter-phx-dhcp_bps      Creates Cookiecutter Phoenix DHCP blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-phx-infoblox_bps  Creates Cookiecutter Phoenix InfoBlox blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-phx-phpipam_bps   Creates Cookiecutter Phoenix PHPIpam blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-phx-solarwinds_bps Creates Cookiecutter Phoenix Solarwinds blueprints locally with default values from site config and cookiecutter.json
-	cookiecutter-phx-static_ip_bps Creates Cookiecutter Phoenix Static IP blueprints locally with default values from site config and cookiecutter.json
-	create-all-bps                 Creates ALL Cookiecutter Phoenix and Amsterdam IPAM blueprints locally and in Calm instance
-	create-ams-all_bps             Creates all Cookiecutter Amsterdam IPAM blueprints locally and in CALM instance
-	create-ams-dhcp_bps            Creates Cookiecutter Amsterdam DHCP blueprints locally and in CALM instance
-	create-ams-infoblox_bps        Creates Cookiecutter Amsterdam InfoBlox blueprints locally and in CALM instance
-	create-ams-phpipam_bps         Creates Cookiecutter Amsterdam PHPIpam blueprints locally and in CALM instance
-	create-ams-solarwinds_bps      Creates Cookiecutter Amsterdam Solarwinds blueprints locally and in CALM instance
-	create-ams-static_ip_bps       Creates Cookiecutter Amsterdam Static IP blueprints locally and in CALM instance
-	create-phx-all_bps             Creates all Cookiecutter Phoenix IPAM blueprints locally and in CALM instance
-	create-phx-dhcp_bps            Creates Cookiecutter Phoenix DHCP blueprints locally and in CALM instance
-	create-phx-infoblox_bps        Creates Cookiecutter Phoenix InfoBlox blueprints locally and in CALM instance
-	create-phx-phpipam_bps         Creates Cookiecutter Phoenix PHPIpam blueprints locally and in CALM instance
-	create-phx-solarwinds_bps      Creates Cookiecutter Phoenix Solarwinds blueprints locally and in CALM instance
-	create-phx-static_ip_bps       Creates Cookiecutter Phoenix Static IP blueprints locally and in CALM instance
-	delete-all-bps                 Deletes ALL Phoenix and Amsterdam IPAM blueprints in CALM instance
-	delete-ams-all_bps             Deletes ALL Amsterdam IPAM blueprints in CALM instance
-	delete-ams-dhcp_bps            Deletes Amsterdam DHCP blueprints in CALM instance
-	delete-ams-infoblox_bps        Deletes Amsterdam InfoBlox blueprints in CALM instance
-	delete-ams-phpipam_bps         Deletes Amsterdam PHPIpam blueprints in CALM instance
-	delete-ams-solarwinds_bps      Deletes Amsterdam Solarwinds blueprints in CALM instance
-	delete-ams-static_ip_bps       Deletes Amsterdam Static IP blueprints in CALM instance
-	delete-phx-all_bps             Deletes ALL Phoenix IPAM blueprints
-	delete-phx-dhcp_bps            Deletes Phoenix DHCP blueprints in CALM instance
-	delete-phx-infoblox_bps        Deletes Phoenix InfoBlox blueprints in CALM instance
-	delete-phx-phpipam_bps         Deletes Phoenix PHPIpam blueprints in CALM instance
-	delete-phx-solarwinds_bps      Deletes Phoenix Solarwinds blueprints in CALM instance
-	delete-phx-static_ip_bps       Deletes Phoenix Static IP blueprints in CALM instance
-	```
-6. **Initialize the local secrets** by running `dsl-init-calm-config.sh` to add credential files in a .local directory at the root of the repo to enable blueprint compiling.  This file can be edited to include proper passwords as needed.
+6. **Initialize the local secrets** by running `make init-dsl` to add credential files in a .local directory at the root of the repo to enable blueprint compiling.  The `dsl-init-secrets.sh` file, which is called from the Make command, can be edited to include proper passwords as needed.  Supply your username and password for the Calm instance IP that you entered during the initial cookiecutter.
 7. Figure out the following **AHV information**:
 	- Name of the **Windows** Server 2019 **template** disk image (which must be sysprep ready)
 	- Name of the **CentOS 7** cloud **disk image** (which must be cloud-init ready)
@@ -88,12 +44,11 @@ In order to deploy one or more of those blueprints in a client environment, you 
     - Name of the **Active Directory domain** to use for Windows VMs
 	- If you are using static IP addresses, the **IPv4 configuration** information: subnet mask, default gateway and DNS servers to use
 	- **SMTP gateway IP** address and default **sender email** address for email notifications
-10. **Create Cookiecutter blueprint files locally by running `make cookiecutter-phx-bps-user-input` or `make cookiecutter-ams-bps-user-input`** entering the collected information if different from the values in the cookiecutter.json file.  Alternatively, you could modify the default values in the cookiecutter.json file and run the make commands taking defaults.
-11. **Create Cookiecutter blueprints locally and on PHX or AMS Calm GUI instances by running one of the make create blocks, e.g., `make create-phx-static_ip_bps` or `make create-ams-solarwinds_bps`**
-12. **Customize the blueprints** as required by the client.
-13. Use calm-dsl to **compile each blueprint** the client requires.
-14. **Test** each blueprint.
-15. **Publish** each blueprint in the Calm marketplace.
+10. **Create the Cookiecutter blueprints on the Calm instances by running one of the make create blocks, e.g., `make create-linux-ipam-bp` or `make create-windows-ipam-bp`**
+11. **Customize the blueprints** as required by the client.
+12. Use calm-dsl to **compile each blueprint** the client requires.
+13. **Test** each blueprint.
+14. **Publish** each blueprint in the Calm marketplace.
 
 The sections below will provide detailed instructions for each one of those steps.
 If this is the first time you use a Cloud & Automation Calm repository, you will want to read the following documents first:
