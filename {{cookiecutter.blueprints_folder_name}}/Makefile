@@ -1,5 +1,4 @@
-## Set Calm environment variable.  Default to PHX.
-## To override, pass in variables as part of the make call, e.g.,make create-phx-dhcp_bps CALM_ENVIRONMENT=oswald CALM_PROJECT=default.
+## CALM_ENVIRONMENT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald.
 CALM_ENVIRONMENT ?= {{cookiecutter.calm_environment}}
 export CALM_ENVIRONMENT
 
@@ -80,20 +79,11 @@ init-dsl-config: print-env
 	calm get projects -n ${CALM_PROJECT}
 	calm get server status
 
-####################################################################
-### COOKIECUTTER TASKS - Commands to create various cookiecutter projects locally.
-### PURPOSE: Create local Calm blueprints with cookiecutter.
-
-    ## Use the below to create blueprints for any environment
-cookiecutter-bps-user-input:
-	git submodule update --init
-	cookiecutter -v ./ -f
-
 ############################################################################################################
 ### DEVELOPMENT TESTING - CREATE BLUEPRINT TASKS
 ### PURPOSE: Create the corresdponding blueprints in the respective sites, i.e., PHX and AMS
 
-create-linux-ipam-bp:
+create-linux-ipam-bp: ## Create Linux IPAM blueprint on Calm instance.
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm compile bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py
 	calm create bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py --name ${LINUX_IPAM_BP_NAME} --force
@@ -102,7 +92,7 @@ create-linux-ipam-bp:
 ### DEVELOPMENT TESTING - COOKIECUTTER AND CALM DSL DELETE BLUEPRINT TASKS
 ### PURPOSE: Delete calm dsl created blueprints in the respective sites, i.e., PHX and AMS
 
-delete-linux-ipam-bp:
+delete-linux-ipam-bp: ## Delete the Linux IPAM blueprint from the Calm instance.
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm delete bp ${LINUX_IPAM_BP_NAME}
 
