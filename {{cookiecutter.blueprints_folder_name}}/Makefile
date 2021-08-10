@@ -56,10 +56,11 @@ print-env:
 	@echo $(shell python --version | head -n1)
 	@echo $(shell pip --version | awk '{print $1 " " $2}')
 
-## Initialize calm config and do some quick validations.
-## CALM_PROJECT default is pracdev-cap.  If you wish to override, pass in the appropriate calm project. i.e., make init-dsl-config CALM_PROJECT=default.
-## CALM_ENVIRONMENT default is PHX.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald.
-## For sites other than GSO Phoenix or Amsterdam, pass in the approriate IP for the prism central calm instance, i.e., make init-dsl-config PC_IP_ADDRESS= 10.x.x.x CALM_ENVIRONMENT=oswald CALM_PROJECT=default
+## Initialize Calm dsl config and do some quick validations.
+## CALM_PROJECT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate calm project. i.e., make init-dsl-config CALM_PROJECT=default.
+## CALM_ENVIRONMENT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald.
+## PC_IP_ADDRESS default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config PC_IP_ADDRESS=x.x.x.x.
+
 CALM_DSL_LOCAL_DIR_LOCATION = $(CURDIR)/.local/${CALM_ENVIRONMENT}/
 export CALM_DSL_LOCAL_DIR_LOCATION
 
