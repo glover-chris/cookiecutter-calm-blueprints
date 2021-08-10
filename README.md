@@ -29,6 +29,14 @@ In order to deploy one or more of those blueprints in a client environment, you 
 4. **Clone** this **git repository** to a workstation which has access to the client Calm/Prism Central instance and has calm-dsl installed.
 	`git clone https://github.com/nutanixservices/cita-starter` && `cd cita-starter`
 5. **Review `make help` to see the various options that can be executed via make commands.
+```
+create-all-bps                 Create all blueprints on the Calm instance.
+create-linux-ipam-bp           Create Linux IPAM blueprint on Calm instance.
+create-windows-ipam-bp         Create Linux IPAM blueprint on Calm instance.
+delete-all-bps                 Delete all blueprints from the Calm instance.
+delete-linux-ipam-bp           Delete the Linux IPAM blueprint from the Calm instance.
+delete-windows-ipam-bp         Delete the Linux IPAM blueprint from the Calm instance.
+```
 6. **Initialize the local secrets** by running `make init-dsl` to add credential files in a .local directory at the root of the repo to enable blueprint compiling.  The `dsl-init-secrets.sh` file, which is called from the Make command, can be edited to include proper passwords as needed.  Supply your username and password for the Calm instance IP that you entered during the initial cookiecutter.
 7. Figure out the following **AHV information**:
 	- Name of the **Windows** Server 2019 **template** disk image (which must be sysprep ready)
@@ -44,11 +52,12 @@ In order to deploy one or more of those blueprints in a client environment, you 
     - Name of the **Active Directory domain** to use for Windows VMs
 	- If you are using static IP addresses, the **IPv4 configuration** information: subnet mask, default gateway and DNS servers to use
 	- **SMTP gateway IP** address and default **sender email** address for email notifications
-10. **Create the Cookiecutter blueprints on the Calm instances by running one of the make create blocks, e.g., `make create-linux-ipam-bp` or `make create-windows-ipam-bp`**
-11. **Customize the blueprints** as required by the client.
-12. Use calm-dsl to **compile each blueprint** the client requires.
-13. **Test** each blueprint.
-14. **Publish** each blueprint in the Calm marketplace.
+10. **Create the Cookiecutter blueprints on the Calm instances by running one of the make create blocks, e.g., `make create-linux-ipam-bp` or `make create-windows-ipam-bp` or `make create-all-bps`**
+11. **Delete the blueprints from the Calm instance by running one of the make delete blocks, f.g., `make delete-linux-ipam-bp` or `make delete-windows-ipam-bp` or `make delete-all-bps`**
+12. **Customize the blueprints** as required by the client.
+13. Use calm-dsl to **compile each blueprint** the client requires.
+14. **Test** each blueprint.
+15. **Publish** each blueprint in the Calm marketplace.
 
 The sections below will provide detailed instructions for each one of those steps.
 If this is the first time you use a Cloud & Automation Calm repository, you will want to read the following documents first:

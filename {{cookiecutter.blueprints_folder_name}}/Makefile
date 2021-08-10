@@ -40,6 +40,7 @@ BLUEPRINT_COOKIECUTTER_IPAM_SOLUTION := {{cookiecutter.ipam_solution}}
 BLUEPRINT_SUFFIX_NAME := ${GIT_BRANCH_NAME}-${GIT_COMMIT_ID}
 
 LINUX_IPAM_BP_NAME := "cita-starter-lin-${BLUEPRINT_COOKIECUTTER_IPAM_SOLUTION}-${BLUEPRINT_SUFFIX_NAME}"
+WINDOWS_IPAM_BP_NAME := "cita-starter-win-${BLUEPRINT_COOKIECUTTER_IPAM_SOLUTION}-${BLUEPRINT_SUFFIX_NAME}"
 
 # Export all variables.
 export
@@ -83,18 +84,31 @@ init-dsl-config: print-env
 ### DEVELOPMENT TESTING - CREATE BLUEPRINT TASKS
 ### PURPOSE: Create the corresdponding blueprints in the respective sites, i.e., PHX and AMS
 
+create-all-bps: create-linux-ipam-bp create-windows-ipam-bp ## Create all blueprints on the Calm instance.
+
 create-linux-ipam-bp: ## Create Linux IPAM blueprint on Calm instance.
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm compile bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py
 	calm create bp -f linux/linux_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py --name ${LINUX_IPAM_BP_NAME} --force
 
+create-windows-ipam-bp: ## Create Linux IPAM blueprint on Calm instance.
+	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
+	calm compile bp -f windows/windows_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py
+	calm create bp -f windows/windows_${BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX}.py --name ${WINDOWS_IPAM_BP_NAME} --force
+
 ############################################################################################################
 ### DEVELOPMENT TESTING - COOKIECUTTER AND CALM DSL DELETE BLUEPRINT TASKS
 ### PURPOSE: Delete calm dsl created blueprints in the respective sites, i.e., PHX and AMS
 
+delete-all-bps: delete-linux-ipam-bp delete-windows-ipam-bp ## Delete all blueprints from the Calm instance.
+
 delete-linux-ipam-bp: ## Delete the Linux IPAM blueprint from the Calm instance.
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm delete bp ${LINUX_IPAM_BP_NAME}
+
+delete-windows-ipam-bp: ## Delete the Linux IPAM blueprint from the Calm instance.
+	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
+	calm delete bp ${WINDOWS_IPAM_BP_NAME}
 
 ## Help listing makefile blocks
 .PHONY: help
