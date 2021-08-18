@@ -28,10 +28,6 @@ else
 	endif
 endif
 
-## Getting local git repository details.
-GIT_COMMIT_ID     := $(shell git rev-parse --short HEAD)
-GIT_BRANCH_NAME   := $(shell git rev-parse --abbrev-ref HEAD | head -c14)
-
 ## Blueprint file location variables.
 BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX := {{cookiecutter.blueprintname}}
 BLUEPRINT_COOKIECUTTER_IPAM_SOLUTION := {{cookiecutter.ipam_solution}}
