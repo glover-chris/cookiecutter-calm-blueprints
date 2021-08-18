@@ -23,15 +23,16 @@ BP_CRED_phpipam_PASSWORD="test"
 BP_CRED_infoblox_PASSWORD="test"
 BP_CRED_solarwinds_PASSWORD="test"
 
-ARGS_LIST=($@)
-
-if [ ${#ARGS_LIST[@]} -lt 3 ]; then
+if [ $# -lt 3 ]; then
 	echo 'Usage: ./dsl_init_calm_config.sh [CALM-ENVIRONMENT-NAME] [CALM-DSL-USERNAME] [CALM-DSL-PASSWORD]'
 	echo 'Example: ./dsl_init_calm_config.sh calm-enviroment-sitename dsl.user@gso.lab dslpassword'
 	exit
 fi
 
 if [ ! -d .local/$CALM_ENVIRONMENT ]; then
+	mkdir -p .local/$CALM_ENVIRONMENT
+elif [ -d .local/$CALM_ENVIRONMENT ]; then
+	rm -rf .local/$CALM_ENVIRONMENT
 	mkdir -p .local/$CALM_ENVIRONMENT
 fi
 
