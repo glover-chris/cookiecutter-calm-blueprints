@@ -79,7 +79,7 @@ INIT_DSL_LOCATION = $(CURDIR)
 init-dsl: init-dsl-secrets init-dsl-config
 
 init-dsl-secrets:
-	@read -s -p "Enter the username for the Calm environment/IP address you entered in the cookiecutter: " username ; \
+	@read -p "Enter the username for the Calm environment/IP address you entered in the cookiecutter: " username ; \
 	read -s -p "Enter the password for the Calm environment/IP address you entered in the cookiecutter: " password ; \
 	$(INIT_DSL_LOCATION)/dsl-init-secrets.sh ${CALM_ENVIRONMENT} $$username $$password
 	@rm -rf ~/.calm/dsl.db ~/.calm/init.ini

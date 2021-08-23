@@ -1,4 +1,6 @@
 ## CALM_ENVIRONMENT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald.
+## CALM_PROJECT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald CALM_PROJECT=default PC_IP_ADDRESS=x.x.x.x.
+## PC_IP_ADDRESS default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald CALM_PROJECT=default PC_IP_ADDRESS=x.x.x.x.
 CALM_ENVIRONMENT ?= {{cookiecutter.calm_environment}}
 export CALM_ENVIRONMENT
 
@@ -12,21 +14,8 @@ PC_PORT ?= 9440
 PC_IP_ADDRESS ?= {{cookiecutter.prism_central_ip_address}}
 export
 
-DSL_INIT_PARAMS ?=
-ifneq (,$(filter $(CALM_ENVIRONMENT),PHX phx))
-	# initialize prism central for GSO Phoenix Lab
-	PC_IP_ADDRESS = 10.48.108.12
-	DSL_INIT_PARAMS = --ip $(PC_IP_ADDRESS) --port ${PC_PORT} --username ${PC_USER} --password ${PC_PASS}
-else
-	ifneq (,$(filter $(CALM_ENVIRONMENT),AMS ams))
-		# initialize prism central for GSO Amsterdam Lab
-		PC_IP_ADDRESS = 10.68.97.150
-		DSL_INIT_PARAMS = --ip $(PC_IP_ADDRESS) --port ${PC_PORT} --username ${PC_USER} --password ${PC_PASS}
-	else
-		# initialize prism central based on manually supplied calm dsl init params supplied at runtime.
-		DSL_INIT_PARAMS = --ip $(PC_IP_ADDRESS) --project $(CALM_PROJECT) --port ${PC_PORT} --username ${PC_USER} --password ${PC_PASS}
-	endif
-endif
+## Initialize prism central based on manually supplied calm dsl init params supplied at runtime.
+DSL_INIT_PARAMS ?= --ip $(PC_IP_ADDRESS) --project $(CALM_PROJECT) --port ${PC_PORT} --username ${PC_USER} --password ${PC_PASS}
 
 ## Blueprint file location variables.
 BLUEPRINT_COOKIECUTTER_FILE_SUFFFIX := {{cookiecutter.blueprintname}}
@@ -55,22 +44,24 @@ print-env:
 ## Initialize Calm dsl config and do some quick validations.
 ## CALM_PROJECT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate calm project. i.e., make init-dsl-config CALM_PROJECT=default.
 ## CALM_ENVIRONMENT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald.
-## PC_IP_ADDRESS default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config PC_IP_ADDRESS=x.x.x.x.
+## PC_IP_ADDRESS default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make init-dsl-config CALM_ENVIRONMENT=oswald PC_IP_ADDRESS=x.x.x.x.
+## All three above variables are needed to override the default values and dsl init to another Calm/PC instance,
+## e.g., make init-dsl-config CALM_ENVIRONMENT=oswald CALM_PROJECT=default PC_IP_ADDRESS=x.x.x.x.
 
 CALM_DSL_LOCAL_DIR_LOCATION = $(CURDIR)/.local/${CALM_ENVIRONMENT}/
 export CALM_DSL_LOCAL_DIR_LOCATION
 
 INIT_DSL_LOCATION = $(CURDIR)
 
-init-dsl: init-dsl-secrets init-dsl-config
+init-dsl: init-dsl-secrets init-dsl-config ## Create local Calm-Dsl and Blueprint secrets.  Then init Calm-Dsl to the Calm instance entered during the cookiecutter run.
 
-init-dsl-secrets:
-	@read -s -p "Enter the username for the Calm environment/IP address you entered in the cookiecutter: " username ; \
+init-dsl-secrets: ## Create local Calm-Dsl and Blueprint secrets.
+	@read -p "Enter the username for the Calm environment/IP address you entered in the cookiecutter: " username ; \
 	read -s -p "Enter the password for the Calm environment/IP address you entered in the cookiecutter: " password ; \
 	$(INIT_DSL_LOCATION)/dsl-init-secrets.sh ${CALM_ENVIRONMENT} $$username $$password
 	@rm -rf ~/.calm/dsl.db ~/.calm/init.ini
 
-init-dsl-config: print-env
+init-dsl-config: print-env ## Init Calm-Dsl to the Calm instance entered during the cookiecutter run.
 	# initialize target prism central cluster calm instance
 	calm init dsl $(DSL_INIT_PARAMS) --project $(CALM_PROJECT) --local_dir $(CALM_DSL_LOCAL_DIR_LOCATION) --config $(CALM_DSL_LOCAL_DIR_LOCATION)config.ini --db_file $(CALM_DSL_LOCAL_DIR_LOCATION)dsl.db
 	calm get projects -n ${CALM_PROJECT}
@@ -78,7 +69,12 @@ init-dsl-config: print-env
 
 ############################################################################################################
 ### DEVELOPMENT TESTING - CREATE BLUEPRINT TASKS
-### PURPOSE: Create the corresdponding blueprints in the respective sites, i.e., PHX and AMS
+### PURPOSE: Create the corresdponding blueprints in the respective CALM_ENVIRONMENT
+## CALM_PROJECT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate calm project. i.e., make create-linux-ipam-bp CALM_PROJECT=default.
+## CALM_ENVIRONMENT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make create-linux-ipam-bp CALM_ENVIRONMENT=oswald.
+## PC_IP_ADDRESS default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make create-linux-ipam-bp PC_IP_ADDRESS=x.x.x.x.
+## All three above variables are needed to override the default values and dsl init to another Calm/PC instance,
+## e.g., make create-linux-ipam-bp CALM_ENVIRONMENT=oswald CALM_PROJECT=default PC_IP_ADDRESS=x.x.x.x.
 
 create-all-bps: create-linux-ipam-bp create-windows-ipam-bp ## Create all blueprints on the Calm instance.
 
@@ -94,7 +90,12 @@ create-windows-ipam-bp: ## Create Linux IPAM blueprint on Calm instance.
 
 ############################################################################################################
 ### DEVELOPMENT TESTING - COOKIECUTTER AND CALM DSL DELETE BLUEPRINT TASKS
-### PURPOSE: Delete calm dsl created blueprints in the respective sites, i.e., PHX and AMS
+### PURPOSE: Delete calm dsl created blueprints in the respective CALM_ENVIRONMENT
+## CALM_PROJECT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate calm project. i.e., make delete-linux-ipam-bp CALM_PROJECT=default.
+## CALM_ENVIRONMENT default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make delete-linux-ipam-bp CALM_ENVIRONMENT=oswald.
+## PC_IP_ADDRESS default is what was entered when answering the cookiecutter questions.  If you wish to override, pass in the appropriate site, i.e., make delete-linux-ipam-bp PC_IP_ADDRESS=x.x.x.x.
+## All three above variables are needed to override the default values and dsl init to another Calm/PC instance,
+## e.g., make delete-linux-ipam-bp CALM_ENVIRONMENT=oswald CALM_PROJECT=default PC_IP_ADDRESS=x.x.x.x.
 
 delete-all-bps: delete-linux-ipam-bp delete-windows-ipam-bp ## Delete all blueprints from the Calm instance.
 
@@ -106,7 +107,7 @@ delete-windows-ipam-bp: ## Delete the Linux IPAM blueprint from the Calm instanc
 	make init-dsl-config CALM_ENVIRONMENT=${CALM_ENVIRONMENT}
 	calm delete bp ${WINDOWS_IPAM_BP_NAME}
 
-## Help listing makefile blocks
+## Help list makefile block descriptions
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
